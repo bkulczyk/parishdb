@@ -1,0 +1,22 @@
+= bootstrap_form_with(model: place) do |form|
+  - if place.errors.any?
+    #error_explanation
+      %b.text-primary
+        = pluralize(place.errors.count, "")
+        do poprawienia!
+  .row
+    .col
+      = form.collection_select(:street_id, current_user.streets, :id, :name, {label: 'Ulica', include_blank: 'Wszystkie ulice' }, { class: "selectpicker", data: { live_search: 'true' } })
+    .col
+      = form.text_field :address, label: "Nr domu/mieszkania"
+  .field 
+    = form.collection_check_boxes(:feature_ids, current_user.features, :id, :name, {label: 'Tagi adresu'})
+  .field
+    = form.text_area :notes, label: "Notatki"
+  .field
+    = form.check_box :archive, label: "Archiwum"
+  .actions.mt-4
+    = form.submit "Wyślij", class: "btn btn-primary float-right mb-4"
+%br
+%br
+%br

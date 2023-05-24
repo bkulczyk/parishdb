@@ -1,0 +1,17 @@
+= link_to '+ Nowa grupa', new_characteristic_path, class: "btn btn-primary float-right mb-2"
+%h5 
+  = link_to 'Parafianie', parishioners_path
+  |
+  Grupy
+%b#notice.text-primary= notice
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %tbody
+    - @characteristics.reorder(archive: :asc, name: :asc).each do |characteristic|
+      %tr
+        %td!
+          = characteristic.archive ? "📁".html_safe : " ".html_safe
+          = link_to characteristic.name, characteristic
+        %td
+          = characteristic.parishioners.count
+        %td= characteristic.notes
+%br

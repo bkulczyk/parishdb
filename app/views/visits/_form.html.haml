@@ -1,0 +1,24 @@
+= bootstrap_form_with(model: visit) do |form|
+  - if visit.errors.any?
+    #error_explanation
+      %b.text-primary
+        = pluralize(visit.errors.count, "")
+        do poprawienia!
+  .field
+    = form.date_field :issue, label: "Data wizyty"
+  .field
+    = form.check_box :eucharist, label: "Komunia"
+  .field
+    = form.check_box :confession, label: "Spowiedź"
+  .field
+    = form.check_box :anointing, label: "Namaszczenie"
+  .field
+    = form.text_area :notes, label: "Notatki"
+  .field
+    = form.collection_select(:minister_id, current_user.ministers, :id, :fullname, {label: 'Szafarz'}, { class: "selectpicker", data: { live_search: 'true' } })
+    = form.hidden_field :user_id, :value => @current_user.id
+  .actions.mt-4
+    = form.submit "Aktualizuj", class: "btn btn-primary float-right mb-4"
+%br
+%br
+%br

@@ -1,0 +1,10 @@
+%h5
+  = link_to 'Parafianie', parishioners_path
+  |
+  = link_to 'Wizyty', visits_path
+  |
+  = link_to @visit.parishioner.fullname, @visit.parishioner
+%b#notice.text-primary= notice
+= render 'form', visit: @visit
+%br
+%br

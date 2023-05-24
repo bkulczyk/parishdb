@@ -1,0 +1,69 @@
+= link_to '+ Nowy', new_place_path, class: "btn btn-primary float-right mb-2"
+%h5 
+  = link_to 'Ulice', streets_path
+  |
+  Adresy
+  |
+  = link_to 'Parafianie', parishioners_path
+  |
+  = link_to 'Grupy', characteristics_path
+= search_form_for @q, html: { class: 'form-row' } do |f|
+  .form-group.col-auto
+    = f.collection_select :street_id_eq, current_user.streets.order(:name), :id, :name, { include_blank: 'Wszystkie ulice' }, { class: "selectpicker", data: { live_search: 'true' } }
+  .form-group.col-auto
+    = f.text_field :address_cont, placeholder: 'Nr domu lub mieszkania', class: 'form-control'
+  .form-group.auto
+    = f.button "Szukaj", name: nil, class: 'btn btn-icon icon-left btn-primary'
+%b#notice.text-primary= notice
+Znaleziono 
+%b= @stats.where(archive: 0).count
+aktywnych adresów i
+%b= @stats.where(archive: 1).count
+archiwalnych.
+%br
+%br
+= will_paginate @places
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %thead
+    %tr
+      %th Adres
+      %th Notatki
+  %tbody
+    - @places.each do |place|
+      %tr
+        %td!
+          = place.archive ? "📁".html_safe : " ".html_safe
+          = link_to place.full_address, place
+          %p
+            - place.features.each do |feature|
+              = link_to feature.name, feature, class: "badge badge-info mb-2 mt-2"
+        %td
+          = place.notes
+          %ul
+            - place.parishioners.reorder(death_mark: :asc, archive: :asc, birth: :asc).each do |parishioner|
+              %li
+                - if parishioner.death_mark == true 
+                  = parishioner.death_mark ? "✝️".html_safe : " ".html_safe
+                - else
+                  = parishioner.archive ? "📁".html_safe : " ".html_safe
+                %b= link_to parishioner.fullname, parishioner, class: 'text-primary'
+                
+                - if parishioner.death_mark == true 
+                  - if parishioner.birth.present?
+                    = parishioner.birth.strftime("ur. %d-%m-%Y")
+                  
+                  - if parishioner.death_date.present?
+                    = parishioner.death_date.strftime("zm. %d-%m-%Y")
+                    w wieku
+                    %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor - ((Time.zone.now - parishioner.death_date.to_time) / 1.year.seconds).floor
+                    lat
+                    
+                - else
+                  - if parishioner.birth.present?
+                    lat 
+                    %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor
+                    = parishioner.birth.strftime("ur. %d-%m-%Y")
+                    
+                    %i.text-primary= parishioner.notes
+.mt-4= will_paginate @places
+

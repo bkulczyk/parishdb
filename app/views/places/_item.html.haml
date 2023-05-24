@@ -1,0 +1,52 @@
+= link_to "Usuń", @place, title: 'Usuń', class: 'btn btn-dark float-right', method: :delete, data: { confirm: 'Czy chcesz usunąć adres wraz z wszystkimi danymi z nim powiązanymi?', remote: true }
+%h5
+  = link_to 'Ulice', streets_path
+  |
+  = link_to 'Adresy', places_path
+  |
+  = link_to @place.street.name, @place.street
+  |
+  = @place.archive ? "&#128193;".html_safe : "".html_safe
+  = @place.address
+= link_to '&larr; poprzedni'.html_safe, @place.prev, class: "btn btn-outline-primary mr-2 mb-2"
+= link_to 'następny &rarr;'.html_safe, @place.next, class: "btn btn-outline-primary mb-2"
+%p
+  - @place.features.each do |feature|
+    = link_to feature.name, feature, class: "badge badge-info mb-2 mt-2"
+%p
+  %b#notice.text-primary= notice
+= render 'form', place: @place
+
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %tbody
+    - @place.parishioners.reorder(death_mark: :asc, archive: :asc, birth: :asc).each do |parishioner|
+      %tr
+        %td
+          - if parishioner.death_mark == true 
+            = parishioner.death_mark ? "✝️".html_safe : " ".html_safe
+          - else
+            = parishioner.archive ? "📁".html_safe : " ".html_safe
+          %b= link_to parishioner.fullname, parishioner, class: 'text-primary'
+        %td
+          - if parishioner.death_mark == true 
+            - if parishioner.birth.present?
+              = parishioner.birth.strftime("ur. %d-%m-%Y")
+            
+            - if parishioner.death_date.present?
+              = parishioner.death_date.strftime("zm. %d-%m-%Y")
+              w wieku
+              %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor - ((Time.zone.now - parishioner.death_date.to_time) / 1.year.seconds).floor
+              lat
+              
+          - else
+            - if parishioner.birth.present?
+              lat 
+              %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor
+              = parishioner.birth.strftime("ur. %d-%m-%Y")
+              
+          %i.text-primary= parishioner.notes
+          - parishioner.characteristics.each do |characteristic|
+            = characteristic.name
+          = link_to "Usuń", place_parishioner_path(@place, parishioner.id), title: 'Usuń', class: 'btn btn-sm btn-outline-dark float-right', method: :delete, data: { confirm: 'Czy chcesz usunąć osobę z bazy?', remote: true }
+
+= render partial: 'parishioners/parishioner'

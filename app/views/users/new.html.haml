@@ -1,0 +1,9 @@
+%h1 Nowa baza/użytkownik
+= bootstrap_form_with(model: @user, local: true) do |f|
+  .field
+    = f.email_field :email, label: "Email"
+  .field
+    = f.password_field :password, label: "Hasło"
+  .actions
+    = f.submit 'Wyślij'
+

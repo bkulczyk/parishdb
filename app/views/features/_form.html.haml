@@ -1,0 +1,15 @@
+= bootstrap_form_for @feature do |f|
+  - if feature.errors.any?
+    #error_explanation
+      %b.text-primary
+        = pluralize(feature.errors.count, "")
+        do poprawienia!
+
+  .field
+    = f.text_field :name, label: "Nazwa tagu adresu"
+  .field
+    = f.text_area :notes, label: "Notatki"
+  .field
+    = f.check_box :archive, label: "Archiwum"
+  .actions
+    = f.submit 'Wyślij', class: "btn btn-primary float-right mb-4"

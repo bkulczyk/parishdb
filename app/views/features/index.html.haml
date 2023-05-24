@@ -1,0 +1,37 @@
+= link_to '+ Nowy', new_feature_path, class: "btn btn-primary float-right mb-2"
+%h5 
+  Tagi adresów
+  |
+  = link_to 'Adresy', places_path
+%b#notice.text-primary= notice
+
+W bazie jest
+%b= @places.where(archive: 0).count
+aktywnych adresów i
+%b= @places.where(archive: 1).count
+archiwalnych.
+%br
+%br
+
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %tbody
+    %tr
+      %td Nazwa tagu
+      %td Aktywne
+      %td Archiwalne
+      %td Procentowo
+      %td Notatki
+    - @features.each do |feature|
+      %tr
+        %td!
+          = feature.archive ? "📁".html_safe : " ".html_safe
+          = link_to feature.name, feature
+        %td
+          = feature.places.where(archive: 0).count
+        %td
+          = feature.places.where(archive: 1).count
+        %td
+          = (feature.places.count.to_f / @places.count.to_f  * 100).round(2)
+          \%
+        %td= feature.notes
+%br

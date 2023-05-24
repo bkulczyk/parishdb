@@ -1,0 +1,59 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Baza parafialna
+    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_include_tag 'application'
+  %body.d-flex.flex-column.min-vh-100
+    %nav.navbar.navbar-expand-lg.navbar-dark.bg-primary.sticky-top.no-print
+      %a.navbar-brand{:href => "/"} Baza parafialna
+      %button.navbar-toggler{"aria-controls" => "navbarNav", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarNav", "data-toggle" => "collapse", :type => "button"}
+        %span.navbar-toggler-icon
+      #navbarNav.collapse.navbar-collapse
+        %ul.navbar-nav
+          - if logged_in?
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/places"} Adresy
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/characteristics"} Grupy
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/parishioners"} Parafianie
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/ministers"} Szafarze            
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/features"} Tagi adresów
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/streets"} Ulice
+            %li.nav-item
+              %a.nav-link.text-light{:href => "/visits"} Wizyty
+            %li.nav-item
+              = link_to 'Wyloguj', session_path, method: :delete, class: "nav-link text-light"
+          - else
+            %li.nav-item
+              = link_to 'Zaloguj się', new_session_path, class: "nav-link text-light"
+            %li.nav-item
+              = link_to 'Nowe konto', new_user_path, class: "nav-link text-light"
+
+    .container.mt-3.mb-5
+      = yield
+      %br
+    %footer.bg-primary.text-light.mt-5.py-2.mt-auto.no-print
+      .container 
+        .row
+          .col-12
+            %small
+              Code by BK 2023
+              |
+              - if logged_in?
+                = "#{current_user.email}"
+                |
+                = link_to 'Wyloguj', session_path, method: :delete, class: "text-light"
+              - else
+                = link_to 'Nowe konto', new_user_path, class: "text-light"
+                |
+                = link_to 'Zaloguj się', new_session_path, class: "text-light"
+

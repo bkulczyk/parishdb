@@ -1,0 +1,65 @@
+= bootstrap_form_for @parishioner do |f|
+  - if @parishioner.errors.any?
+    #error_explanation
+      %b.text-primary= "#{pluralize(@parishioner.errors.count, "")} do poprawienia:"
+  .row
+    .col
+      = f.text_field :firstname, label: "Imię"
+    .col
+      = f.text_field :lastname, label: "Nazwisko"
+  .row
+    .col
+      = f.date_field :birth, label: "Data urodzenia", input_html: { 'style' => 'display: inline' }
+    .col
+      = f.collection_select(:place_id, current_user.places.includes(:street).merge(current_user.streets.order(name: :asc, address: :asc)).all, :id, :full_address, {label: 'Adres zamieszkania'}, { class: "selectpicker", data: { live_search: 'true' } })
+  .row
+    .col
+      = f.text_field :phone, label: "Telefon"
+    .col
+      = f.text_field :email, label: "Email"
+  %button.btn.btn-outline-primary{"aria-controls" => "confirmation-collapse", "aria-expanded" => "false", "data-target" => "#confirmation-collapse", "data-toggle" => "collapse", :type => "button"}
+    Dane do bierzmowania
+  #confirmation-collapse.collapse
+    .field.mt-2
+      = f.text_field :birth_place, label: "Miejscowość urodzenia"
+    .field
+      = f.date_field :baptism_date, label: "Data chrztu"
+    .field
+      = f.text_field :baptism_parish, label: "Parafia chrztu"
+    .field
+      = f.text_field :baptism_number, label: "Nr w księdze chrztów"
+    .field
+      = f.text_field :confirmation_name, label: "Imię do bierzmowania"
+    .field
+      = f.text_field :confirmation_witness, label: "Świadek bierzmowania"
+    .field
+      = f.date_field :confirmation_date, label: "Data bierzmowania"
+    .field
+      = f.text_field :confirmation_number, label: "Nr w księdze bierzmowanych"
+  - if parishioner.death_mark == true 
+    .field.mt-2
+      = f.check_box :death_mark, label: "Osoba zmarła"
+    .field
+      = f.date_field :death_date, label: "Data śmierci"
+  - else
+    %button.btn.btn-outline-primary{"aria-controls" => "colllapsedeath", "aria-expanded" => "false", "data-target" => "#colllapsedeath", "data-toggle" => "collapse", :type => "button"}
+      Nekrolog
+    #colllapsedeath.collapse
+      .field.mt-2
+        = f.check_box :death_mark, label: "Osoba zmarła"
+      .field
+        = f.date_field :death_date, label: "Data śmierci"
+    %button.btn.btn-outline-primary{"aria-controls" => "characteristic-collapse", "aria-expanded" => "false", "data-target" => "#characteristic-collapse", "data-toggle" => "collapse", :type => "button"}
+      Pokaż listę grup
+    #characteristic-collapse.collapse 
+      .mt-2= f.collection_check_boxes(:characteristic_ids, current_user.characteristics, :id, :name, {label: 'Grupy'})
+  %br
+  %br
+  .field
+    = f.text_area :notes, label: "Notatki"
+  - if parishioner.death_mark == true
+  - else
+    .field
+      = f.check_box :archive, label: "Archiwum"
+  .actions
+    = f.submit 'Wyślij', class: "btn btn-primary float-right mb-4"

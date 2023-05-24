@@ -1,0 +1,21 @@
+.card.text-white.bg-primary
+  .card-header
+    Dodaj wizytę
+  .card-body
+    = bootstrap_form_for [ @parishioner, @visit ] do |visit|
+      .field
+        = visit.date_field :issue, label: "Data wizyty"
+      .field
+        = visit.check_box :eucharist, label: "Komunia"
+      .field
+        = visit.check_box :confession, label: "Spowiedź"
+      .field
+        = visit.check_box :anointing, label: "Namaszczenie"
+      .field
+        = visit.text_area :notes, label: "Notatki"
+      .field
+        = visit.collection_select(:minister_id, current_user.ministers, :id, :fullname, {include_blank: 'Wybierz', label: 'Szafarz'}, { class: "selectpicker", data: { live_search: 'true' } })
+        = visit.hidden_field :user_id, :value => @current_user.id
+      .actions.mt-4
+        = visit.submit "Wyślij", class: "btn btn-primary float-right mb-4"
+      Aby dopisać wizytę musisz wybrać datę!

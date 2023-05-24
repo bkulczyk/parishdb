@@ -1,0 +1,17 @@
+.card.text-white.bg-primary
+  .card-header
+    Dodaj mieszkańca
+  .card-body
+    = bootstrap_form_for [ @place, @parishioner ] do |parishioner|
+      .row
+        .col
+          = parishioner.text_field :firstname, label: "Imię"
+        .col
+          = parishioner.text_field :lastname, label: "Nazwisko"
+      .row
+        .col
+          = parishioner.date_field :birth, label: "Data urodzenia", input_html: { 'style' => 'display: inline' }
+          = parishioner.hidden_field :user_id, :value => @current_user.id
+      .actions
+        = parishioner.submit 'Dodaj', class: "btn btn-primary float-right mb-4"
+        Wszystkie pola musza być wypełnione!

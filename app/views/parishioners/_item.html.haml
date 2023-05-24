@@ -1,0 +1,44 @@
+%h5
+  = link_to 'Ulice', streets_path
+  |
+  = link_to 'Adresy', places_path
+  |
+  = link_to @parishioner.place.street.name, @parishioner.place.street
+  |
+  = link_to @parishioner.place.address, @parishioner.place
+  |
+  = @parishioner.archive ? "&#128193;".html_safe : "".html_safe
+  = @parishioner.fullname
+%p
+  - @parishioner.characteristics.each do |characteristic|
+    = link_to characteristic.name, characteristic, class: "btn btn-info mb-2 mt-2"
+%p
+  %b#notice.text-primary= notice
+= render 'form', parishioner: @parishioner
+
+
+
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %tbody
+    - @parishioner.visits.limit(5).each do |visit|
+      %tr
+        - unless visit.id.blank?
+          %td
+            - if visit.issue.present?
+              = link_to visit.issue.strftime("%d-%m-%Y"), edit_visit_path(visit)
+          %td
+            - if visit.eucharist  == true 
+              .badge.badge-primary.text-white.mb-2 Komunia
+            - if visit.confession  == true 
+              .badge.badge-primary.text-white.mb-2 Spowiedź
+            - if visit.anointing  == true 
+              .badge.badge-primary.text-white.mb-2 Namaszczenie
+            %p= visit.notes
+          %td
+            - if visit.minister.present?
+              = visit.minister.fullname
+          %td
+            - if visit.id.present?
+              = link_to "Usuń", parishioner_visit_path(@parishioner, visit.id), title: 'Usuń', class: 'btn btn-sm btn-outline-dark float-right', method: :delete, data: { confirm: 'Czy chcesz wizytę z bazy?', remote: true }
+
+.mt-4= render partial: 'visits/visit'

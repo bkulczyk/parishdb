@@ -1,0 +1,33 @@
+= link_to '+ Nowa', new_street_path, class: "btn btn-primary float-right mb-2"
+%h5 
+  Ulice
+  |
+  = link_to 'Adresy', places_path
+  |
+  = link_to 'Parafianie', parishioners_path
+= search_form_for @q, html: { class: 'form-row' } do |f|
+  .form-group.col-auto
+    = f.text_field :name_cont, placeholder: 'Nazwa ulicy', class: 'form-control'
+  .form-group.auto
+    = f.button "Szukaj", name: nil, class: 'btn btn-icon icon-left btn-primary'
+%b#notice.text-primary= notice
+= will_paginate @streets
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %thead
+    %tr
+      %th Nazwa ulicy
+      %th Aktywne 
+      %th Archiwalne
+  %tbody
+    - @streets.each do |street|
+      %tr
+        %td
+          = street.archive ? "📁".html_safe : " ".html_safe
+          = link_to street.name, street
+        %td
+          = street.places.where(archive: 0).count
+        %td
+          = street.places.where(archive: 1).count
+
+.mt-4= will_paginate @streets
+%br

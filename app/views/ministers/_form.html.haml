@@ -1,0 +1,14 @@
+= bootstrap_form_with(model: minister) do |form|
+  - if minister.errors.any?
+    #error_explanation
+      %b.text-primary
+        = pluralize(minister.errors.count, "")
+        do poprawienia!
+  .field
+    = form.text_field :fullname, label: "Imię i nazwisko szafarza"
+  .field
+    = form.text_area :notes, label: "Notatki"
+  .field
+    = form.check_box :archive, label: "Archiwum"
+  .actions.mt-4
+    = form.submit "Wyślij", class: "btn btn-primary float-right mb-4"

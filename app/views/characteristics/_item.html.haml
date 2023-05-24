@@ -1,0 +1,126 @@
+%h5.no-print
+  = link_to 'Grupy', characteristics_path
+  |
+  = @characteristic.name
+%b#notice.text-primary.no-print= notice
+.no-print= render 'form', characteristic: @characteristic
+%br
+%br
+%h5= @characteristic.name
+= characteristic.parishioners.count
+osób w tej grupie.
+%p= @characteristic.notes
+- if @characteristic.parishioners.present?
+  - if @characteristic.name.include? "#"
+    Użycie # w nazwie ukrywa listę parafian i blokuje usunięcie.
+  - else 
+    .table-responsive
+      %table.table.table-striped.table-bordered
+        %thead
+          %tr
+            - if @characteristic.name.include? "Bierzmowani"
+              %th Nr
+            %th Nazwisko i imię
+            - if @characteristic.name.include? "Bierzmowani"
+              %th Patron
+              %th Data i miejsce ur.
+              %th Świadek
+              %th Nr aktu chrztu
+              %th Parafia chrztu
+              %th Notatki
+            - if @characteristic.name.include? "Chorzy"
+              %th Ostatnia wizyta
+              %th Notatki
+        %tbody
+          - @characteristic.parishioners.reorder(lastname: :asc, firstname: :asc).each do |parishioner|
+            %tr{style: "page-break-inside: avoid; page-break-after: auto;"}
+              - if @characteristic.name.include? "Bierzmowani"
+                %td
+                  = parishioner.confirmation_number
+              %td
+                - if parishioner.death_mark == true 
+                  = parishioner.death_mark ? "✝️".html_safe : " ".html_safe
+                - else
+                  = parishioner.archive ? "📁".html_safe : " ".html_safe
+                %b= link_to parishioner.fullname, parishioner, class: 'text-primary'
+                %i= parishioner.notes
+                = parishioner.phone
+                = parishioner.email
+                %br
+                - if @characteristic.name.include? "Bierzmowani" 
+                - elsif @characteristic.name.include? "Chorzy"
+                  - if parishioner.death_mark == true 
+                    - if parishioner.birth.present?
+                      = parishioner.birth.strftime("ur. %d-%m-%Y")
+                    
+                    - if parishioner.death_date.present?
+                      = parishioner.death_date.strftime("zm. %d-%m-%Y")
+                      w wieku
+                      %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor - ((Time.zone.now - parishioner.death_date.to_time) / 1.year.seconds).floor
+                      lat
+                      
+                  - else
+                    - if parishioner.birth.present?
+                      lat 
+                      %ins= ((Time.zone.now - parishioner.birth.to_time) / 1.year.seconds).floor
+                      = parishioner.birth.strftime("ur. %d-%m-%Y")
+                  %p= link_to parishioner.place.full_address, parishioner.place
+                  
+                - else
+                  = link_to parishioner.place.full_address, parishioner.place
+
+
+
+              - if @characteristic.name.include? "Bierzmowani"
+                %td
+                  = parishioner.confirmation_name
+                %td
+                  = parishioner.birth
+                  = parishioner.birth_place
+                %td
+                  = parishioner.confirmation_witness
+                %td
+                  = parishioner.baptism_number
+                %td
+                  = parishioner.baptism_parish
+                %td
+                  = parishioner.notes
+                  %br
+                  = parishioner.phone
+                  %br
+                  = parishioner.email
+
+              - if @characteristic.name.include? "Chorzy"
+                %td
+                  - parishioner.visits.limit(1).each do |visit|
+                    - if visit.issue.present?
+                      = link_to visit.issue.strftime("%d-%m-%Y"), edit_visit_path(visit)
+                    %br
+                    - if visit.eucharist  == true 
+                      .badge.badge-primary.text-white.mb-2 Komunia
+                    - if visit.confession  == true 
+                      .badge.badge-primary.text-white.mb-2 Spowiedź
+                    - if visit.anointing  == true 
+                      .badge.badge-primary.text-white.mb-2 Namaszczenie
+                    %i= visit.notes
+                    %br
+                    %b
+                      - if visit.minister.present?
+                        = visit.minister.fullname
+                %td
+                  = parishioner.notes
+                  %br
+                  = parishioner.phone
+                  %br
+                  = parishioner.email
+
+- if @characteristic.name.include? "#"
+- else
+  .no-print          
+    %button.btn.btn-outline-dark{"aria-controls" => "confirmation-collapse", "aria-expanded" => "false", "data-target" => "#confirmation-collapse", "data-toggle" => "collapse", :type => "button"}
+      Usuń grupę!
+    #confirmation-collapse.collapse
+      
+      %p.text-primary.mt-2 Ta operacja nie jest odwracalna!     
+      
+      = link_to "Usuń grupę!", @characteristic, title: 'Usuń', class: 'btn btn-dark float-left', method: :delete, data: { confirm: 'Czy chcesz usunąć tę grupę?', remote: true }

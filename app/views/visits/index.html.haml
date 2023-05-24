@@ -1,0 +1,48 @@
+.no-print
+  %h5 
+    Wizyty
+    |
+    = link_to 'Adresy', places_path
+    |
+    = link_to 'Parafianie', parishioners_path
+    |
+    = link_to 'Grupy', characteristics_path
+  = search_form_for @q, html: { class: 'form-row' } do |f|
+    .form-group.col-auto
+      = f.date_field :issue_gteq, class: 'form-control'
+    .form-group.col-auto
+      = f.date_field :issue_lteq, class: 'form-control'
+    .form-group.col-auto
+      = f.text_field :parishioner_firstname_cont, placeholder: 'Imię', class: 'form-control'
+    .form-group.col-auto
+      = f.text_field :parishioner_lastname_cont, placeholder: 'Nazwisko', class: 'form-control'
+    .form-group.col-auto
+      = f.button "Szukaj", name: nil, class: 'btn btn-icon icon-left btn-primary'
+  %b#notice.text-primary= notice
+  = will_paginate @visits
+%table.table.table-striped.table-bordered.table-hover
+  %tbody
+    %tr
+      %td Data
+      %td Osoba i adres
+      %td Sakramenty
+      %td Szafarz
+    - @visits.each do |visit|
+      %tr
+        %td= link_to visit.issue.strftime("%d-%m-%Y"), edit_visit_path(visit)
+        %td
+          %b= link_to visit.parishioner.fullname, visit.parishioner, class: 'text-primary'
+          %br
+          = link_to visit.parishioner.place.full_address, visit.parishioner.place
+        %td
+          - if visit.eucharist  == true 
+            .badge.badge-primary.text-white.mb-2 Komunia
+          - if visit.confession  == true 
+            .badge.badge-primary.text-white.mb-2 Spowiedź
+          - if visit.anointing  == true 
+            .badge.badge-primary.text-white.mb-2 Namaszczenie
+          %p= visit.notes
+        %td= visit.minister.fullname
+.no-print
+  .mt-4= will_paginate @visits
+  

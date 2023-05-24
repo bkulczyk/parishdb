@@ -1,0 +1,17 @@
+= bootstrap_form_with(model: street) do |form|
+  - if street.errors.any?
+    #error_explanation
+      %b.text-primary
+        = pluralize(street.errors.count, "")
+        do poprawienia!
+  .field
+    = form.text_field :name, label: "Nazwa ulicy"
+  .field
+    = form.text_area :notes, label: "Notatki"
+  .field
+    = form.check_box :archive, label: "Archiwum"
+  .actions.mt-4
+    = form.submit "Wyślij", class: "btn btn-primary float-right mb-4"
+%br
+%br
+%br

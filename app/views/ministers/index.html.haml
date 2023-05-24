@@ -1,0 +1,15 @@
+= link_to '+ Nowy', new_minister_path, class: "btn btn-primary float-right mb-2"
+%h5 
+  Szafarze
+  |
+  = link_to 'Wizyty', visits_path
+%b#notice.text-primary= notice
+%table.table.table-striped.table-bordered.table-hover.mb-4.py-4
+  %tbody
+    - @ministers.each do |minister|
+      %tr
+        %td!
+          = minister.archive ? "📁".html_safe : " ".html_safe
+          = link_to minister.fullname, minister
+        %td= minister.notes
+%br

@@ -1,0 +1,9 @@
+%h1 Zaloguj się
+= bootstrap_form_with url: session_path do |f|
+  .field
+    = f.email_field :email, label: "Email"
+  .field
+    = f.password_field :password, label: "Hasło"
+  .actions
+    = f.submit 'Zaloguj'
+

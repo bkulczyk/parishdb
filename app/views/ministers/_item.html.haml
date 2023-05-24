@@ -1,0 +1,13 @@
+%h5
+  = link_to 'Szafarze', ministers_path
+  |
+  = @minister.fullname
+%b#notice.text-primary= notice
+= render 'form', minister: @minister
+%button.btn.btn-outline-dark{"aria-controls" => "confirmation-collapse", "aria-expanded" => "false", "data-target" => "#confirmation-collapse", "data-toggle" => "collapse", :type => "button"}
+  Usuń szafarza
+#confirmation-collapse.collapse
+  
+  %p.text-primary.mt-2 Ta operacja nie jest odwracalna! Zostaną usunięte również wizyty powiązane z tym szafarzem!        
+  
+  = link_to "Usuń tego szafarza i wizyty!", @minister, title: 'Usuń', class: 'btn btn-dark float-left', method: :delete, data: { confirm: 'Czy chcesz usunąć tego szafarza wraz z wszystkimi danymi z nim powiązanymi?', remote: true }
