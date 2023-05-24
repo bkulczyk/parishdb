@@ -26,6 +26,8 @@ The Parishioners Database Management App utilizes a few Ruby tricks to enhance i
 
 -   **Smart Addressing**: The app employs a smart addressing technique that combines street and number to determine the next or previous address/place. Additionally, leading zeros are added to numbers in addresses for proper sequencing. For example, 1/1 is recorded as 001/001.
 
+-   **Age Calculation**: The app incorporates an age calculation feature based on birth dates. By subtracting the birth date from the current date, the app automatically calculates the age in years. This functionality is also applicable in cases of death, where the app can display the age at the time of passing.
+
 ## Technology Stack
 
 The app is built using the following technologies and gems:
